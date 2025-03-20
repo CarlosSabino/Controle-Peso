@@ -32,11 +32,22 @@ function getDailyMotivation() {
   return motivations[index];
 }
 
+// Funções para alternar entre telas
+function showSignUp() {
+  document.getElementById('login-section').style.display = 'none';
+  document.getElementById('signup-section').style.display = 'block';
+}
+
+function showLogin() {
+  document.getElementById('signup-section').style.display = 'none';
+  document.getElementById('login-section').style.display = 'block';
+}
+
 // Funções de autenticação
 function signUp() {
   const name = document.getElementById('name').value;
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
   if (!name) {
     alert("Por favor, insira seu nome!");
     return;
@@ -44,7 +55,6 @@ function signUp() {
   auth.createUserWithEmailAndPassword(email, password)
     .then(userCredential => {
       const user = userCredential.user;
-      // Salvar o nome no banco de dados
       database.ref('users/' + user.uid).set({
         name: name,
         email: email
@@ -63,15 +73,14 @@ function signIn() {
 
 function signOut() {
   auth.signOut().then(() => {
-    document.getElementById('auth-section').style.display = 'block';
     document.getElementById('main-section').style.display = 'none';
+    document.getElementById('login-section').style.display = 'block';
   });
 }
 
 // Verifica estado de autenticação
 auth.onAuthStateChanged(user => {
   if (user) {
-    // Carregar o nome do usuário
     database.ref('users/' + user.uid).once('value', snapshot => {
       const userData = snapshot.val();
       if (userData) {
@@ -81,13 +90,14 @@ auth.onAuthStateChanged(user => {
       loadWeights(user.uid);
     });
   } else {
-    document.getElementById('auth-section').style.display = 'block';
     document.getElementById('main-section').style.display = 'none';
+    document.getElementById('login-section').style.display = 'block';
   }
 });
 
 function showMainSection() {
-  document.getElementById('auth-section').style.display = 'none';
+  document.getElementById('login-section').style.display = 'none';
+  document.getElementById('signup-section').style.display = 'none';
   document.getElementById('main-section').style.display = 'block';
   document.getElementById('motivation').textContent = getDailyMotivation();
 }
