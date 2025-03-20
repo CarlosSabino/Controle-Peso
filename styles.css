@@ -82,6 +82,23 @@ button:hover {
   background-color: #cc0000;
 }
 
+.neon-btn {
+  background-color: #ff00ff;
+  color: #fff;
+  border: 2px solid #ff00ff;
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+  animation: neon 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes neon {
+  from {
+    box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 15px #ff00ff;
+  }
+  to {
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+  }
+}
+
 canvas {
   margin-top: 20px;
 }
@@ -160,6 +177,7 @@ canvas {
 #ranking-list {
   list-style: none;
   padding: 0;
+  margin-top: 20px;
 }
 
 #ranking-list li {
@@ -171,26 +189,28 @@ canvas {
 }
 
 #ranking-list li:first-child {
-  background-color: #ffd700; /* Ouro para o primeiro lugar */
+  background-color: #ffd700;
   font-weight: bold;
 }
 
 /* Animações */
-#login-section, #signup-section, #main-section, #edit-form {
+#login-section, #signup-section, #main-section, #edit-form, #ranking-section {
   transition: opacity 0.5s ease-in-out;
 }
 
 #login-section[style*="display: none"],
 #signup-section[style*="display: none"],
 #main-section[style*="display: none"],
-#edit-form[style*="display: none"] {
+#edit-form[style*="display: none"],
+#ranking-section[style*="display: none"] {
   opacity: 0;
 }
 
 #login-section[style*="display: block"],
 #signup-section[style*="display: block"],
 #main-section[style*="display: block"],
-#edit-form[style*="display: block"] {
+#edit-form[style*="display: block"],
+#ranking-section[style*="display: block"] {
   opacity: 1;
 }
 
