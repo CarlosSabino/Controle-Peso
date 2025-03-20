@@ -26,6 +26,20 @@ const motivations = [
   "Cada passo conta, você é incrível! 🌈"
 ];
 
+const weightLossMotivations = [
+  "Parabéns, você perdeu peso! Continue assim! 🎉",
+  "Incrível, mais leve a cada dia! 🥳",
+  "Você está arrasando na perda de peso! 💥",
+  "Que progresso fantástico! Siga em frente! 🚀"
+];
+
+const weightGainMotivations = [
+  "Não desanime, cada dia é uma nova chance! 🌟",
+  "Você é mais forte do que pensa, continue! 💪",
+  "Um pequeno passo para trás, mas você vai longe! 🏃‍♂️",
+  "Mantenha o foco, você consegue! 🌈"
+];
+
 // Função para pegar a frase do dia
 function getDailyMotivation() {
   const today = new Date().toISOString().split('T')[0];
@@ -126,12 +140,14 @@ auth.onAuthStateChanged(user => {
       }
       showMainSection();
       loadWeights(user.uid);
+      updateWeeklyRanking();
     }, error => {
       console.error("Erro ao ler dados do usuário:", error);
       alert("Erro ao carregar dados do usuário: " + error.message);
       document.getElementById('user-name').textContent = "Usuário";
       showMainSection();
       loadWeights(user.uid);
+      updateWeeklyRanking();
     });
   } else {
     console.log("Nenhum usuário autenticado.");
@@ -154,6 +170,98 @@ function showMainSection() {
     document.getElementById('main-section').style.display = 'block';
   }, 50);
   document.getElementById('motivation').textContent = getDailyMotivation();
+}
+
+// Função para obter o número da semana do ano
+function getWeekNumber(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+  const week1 = new Date(d.getFullYear(), 0, 4);
+  return Math.round(((d - week1) / 86400000 + 1) / 7);
+}
+
+// Função para obter o início e fim da semana (segunda a sexta)
+function getWeekRange() {
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0 (domingo) a 6 (sábado)
+  const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek); // Ajusta para segunda-feira
+  const monday = new Date(today);
+  monday.setDate(today.getDate() + diffToMonday);
+  monday.setHours(0, 0, 0, 0);
+
+  const friday = new Date(monday);
+  friday.setDate(monday.getDate() + 4); // Sexta-feira é 4 dias após segunda
+  friday.setHours(23, 59, 59, 999);
+
+  const year = monday.getFullYear();
+  const week = getWeekNumber(monday);
+  const weekKey = `${year}-${week}`;
+
+  return { monday, friday, weekKey };
+}
+
+// Função para atualizar o ranking semanal
+function updateWeeklyRanking() {
+  const { monday, friday, weekKey } = getWeekRange();
+  const rankingList = document.getElementById('ranking-list');
+  rankingList.innerHTML = '';
+
+  // Obter todos os usuários
+  database.ref('users').once('value', usersSnapshot => {
+    const users = [];
+    usersSnapshot.forEach(userSnap => {
+      const userData = userSnap.val();
+      users.push({ uid: userSnap.key, name: userData.name });
+    });
+
+    // Para cada usuário, calcular a perda de peso na semana
+    const promises = users.map(user => {
+      return database.ref('weights/' + user.uid).once('value').then(weightsSnapshot => {
+        const weights = [];
+        weightsSnapshot.forEach(child => {
+          const data = child.val();
+          const weightDate = new Date(data.date);
+          if (weightDate >= monday && weightDate <= friday) {
+            weights.push({ date: weightDate, weight: data.weight });
+          }
+        });
+
+        if (weights.length === 0) return null;
+
+        // Ordenar por data
+        weights.sort((a, b) => a.date - b.date);
+
+        // Pegar o primeiro e o último peso da semana
+        const firstWeight = weights[0].weight;
+        const lastWeight = weights[weights.length - 1].weight;
+        const weightLoss = firstWeight - lastWeight;
+
+        return { uid: user.uid, name: user.name, weightLoss };
+      });
+    });
+
+    Promise.all(promises).then(results => {
+      // Filtrar usuários sem pesos e ordenar por perda de peso
+      const ranking = results
+        .filter(result => result !== null && result.weightLoss > 0)
+        .sort((a, b) => b.weightLoss - a.weightLoss);
+
+      // Salvar no Firebase
+      database.ref('weeklyScores/' + weekKey).set(ranking);
+
+      // Exibir o ranking
+      ranking.forEach((entry, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${entry.name}: ${entry.weightLoss.toFixed(1)} kg`;
+        rankingList.appendChild(li);
+      });
+
+      if (ranking.length === 0) {
+        rankingList.innerHTML = '<li>Nenhum progresso registrado esta semana.</li>';
+      }
+    });
+  });
 }
 
 // Adicionar peso
@@ -179,16 +287,50 @@ function addWeight() {
     return;
   }
 
-  database.ref('weights/' + user.uid).push({ date, weight })
-    .then(() => {
-      console.log("Peso adicionado com sucesso!");
-      document.getElementById('date').value = '';
-      document.getElementById('weight').value = '';
-    })
-    .catch(error => {
-      console.error("Erro ao adicionar peso:", error);
-      alert("Erro ao adicionar peso: " + error.message);
+  // Obter o peso anterior para comparação
+  database.ref('weights/' + user.uid).once('value', snapshot => {
+    const weights = [];
+    snapshot.forEach(child => {
+      const data = child.val();
+      weights.push({ date: data.date, weight: data.weight });
     });
+
+    weights.sort((a, b) => new Date(b.date) - new Date(a.date)); // Ordenar por data decrescente
+
+    // Salvar o novo peso
+    database.ref('weights/' + user.uid).push({ date, weight })
+      .then(() => {
+        console.log("Peso adicionado com sucesso!");
+        document.getElementById('date').value = '';
+        document.getElementById('weight').value = '';
+
+        // Comparar com o peso anterior
+        if (weights.length > 0) {
+          const previousWeight = weights[0].weight;
+          if (weight < previousWeight) {
+            // Perdeu peso: confetes e mensagem motivacional
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 }
+            });
+            const motivationIndex = Math.floor(Math.random() * weightLossMotivations.length);
+            document.getElementById('motivation').textContent = weightLossMotivations[motivationIndex];
+          } else {
+            // Ganhou peso ou manteve: apenas mensagem motivacional
+            const motivationIndex = Math.floor(Math.random() * weightGainMotivations.length);
+            document.getElementById('motivation').textContent = weightGainMotivations[motivationIndex];
+          }
+        }
+
+        // Atualizar o ranking
+        updateWeeklyRanking();
+      })
+      .catch(error => {
+        console.error("Erro ao adicionar peso:", error);
+        alert("Erro ao adicionar peso: " + error.message);
+      });
+  });
 }
 
 // Carregar pesos
@@ -249,6 +391,7 @@ function saveEdit() {
     .then(() => {
       console.log("Peso editado com sucesso!");
       document.getElementById('edit-form').style.display = 'none';
+      updateWeeklyRanking();
     })
     .catch(error => {
       console.error("Erro ao editar peso:", error);
@@ -273,6 +416,7 @@ function deleteWeight(id) {
     database.ref('weights/' + user.uid + '/' + id).remove()
       .then(() => {
         console.log("Peso deletado com sucesso!");
+        updateWeeklyRanking();
       })
       .catch(error => {
         console.error("Erro ao deletar peso:", error);
