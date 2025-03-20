@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle de Peso</title>
+  <title>Controle de Peso Divertido</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -11,30 +11,33 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>⚖️ Controle de Peso 🥑</h1>
-
-    <div id="auth-section">
-      <div class="form-group">
-        <input type="text" id="name" placeholder="Seu Nome" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Senha" required>
+  <div class="login-container">
+    <div class="background-section"></div>
+    <div class="form-section">
+      <div class="container">
+        <h1>⚖️ Controle de Peso Animado 🥑</h1>
+        <div id="auth-section">
+          <div class="form-group">
+            <input type="text" id="name" placeholder="Seu Nome" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Senha" required>
+          </div>
+          <div class="button-group">
+            <button onclick="signUp()">Cadastrar</button>
+            <button onclick="signIn()">Entrar</button>
+          </div>
+        </div>
+        <div id="main-section" style="display: none;">
+          <h2>Bem-vindo, <span id="user-name"></span>! 🌟</h2>
+          <p id="motivation"></p>
+          <input type="date" id="date" required>
+          <input type="number" id="weight" placeholder="Peso (kg)" step="0.1" required>
+          <button onclick="addWeight()">Adicionar</button>
+          <button onclick="signOut()" id="signout-btn">Sair</button>
+          <canvas id="pesoChart"></canvas>
+          <ul id="weight-list"></ul>
+        </div>
       </div>
-      <div class="button-group">
-        <button onclick="signUp()">Cadastrar</button>
-        <button onclick="signIn()">Entrar</button>
-      </div>
-    </div>
-
-    <div id="main-section" style="display: none;">
-      <h2>Bem-vindo, <span id="user-name"></span>! 🌟</h2>
-      <p id="motivation"></p>
-      <input type="date" id="date" required>
-      <input type="number" id="weight" placeholder="Peso (kg)" step="0.1" required>
-      <button onclick="addWeight()">Adicionar</button>
-      <button onclick="signOut()" id="signout-btn">Sair</button>
-      <canvas id="pesoChart"></canvas>
-      <ul id="weight-list"></ul>
     </div>
   </div>
   <script src="script.js"></script>
