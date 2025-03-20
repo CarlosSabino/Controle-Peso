@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Peso Divertido</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>⚖️ Controle de Peso Animado 🥑</h1>
+
+    <!-- Login/Cadastro -->
+    <div id="login-section">
+      <input type="text" id="username" placeholder="Seu nome">
+      <button onclick="login()">Entrar</button>
+    </div>
+
+    <!-- Área principal (escondida até login) -->
+    <div id="main-section" style="display: none;">
+      <h2>Bem-vindo, <span id="user-name"></span>! 🌟</h2>
+      <p id="motivation"></p>
+
+      <!-- Formulário de peso -->
+      <input type="date" id="date" required>
+      <input type="number" id="weight" placeholder="Peso (kg)" step="0.1" required>
+      <button onclick="addWeight()">Adicionar</button>
+
+      <!-- Gráfico -->
+      <canvas id="pesoChart"></canvas>
+
+      <!-- Lista de pesos -->
+      <ul id="weight-list"></ul>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
