@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle de Peso</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Firebase v9 Compat -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -14,19 +13,21 @@
 <body>
   <div class="container">
     <h1>⚖️ Controle de Peso 🥑</h1>
+
     <div id="auth-section">
       <input type="email" id="email" placeholder="Email" required>
       <input type="password" id="password" placeholder="Senha" required>
       <button onclick="signUp()">Cadastrar</button>
       <button onclick="signIn()">Entrar</button>
-      <button onclick="signOut()" style="display: none;" id="signout-btn">Sair</button>
     </div>
+
     <div id="main-section" style="display: none;">
       <h2>Bem-vindo! 🌟</h2>
       <p id="motivation"></p>
       <input type="date" id="date" required>
       <input type="number" id="weight" placeholder="Peso (kg)" step="0.1" required>
       <button onclick="addWeight()">Adicionar</button>
+      <button onclick="signOut()" id="signout-btn">Sair</button>
       <canvas id="pesoChart"></canvas>
       <ul id="weight-list"></ul>
     </div>
