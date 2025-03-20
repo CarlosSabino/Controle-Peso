@@ -21,12 +21,13 @@ body {
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start; /* Alinha ao topo para evitar corte */
   background-color: #f5e9d8;
+  overflow-y: auto; /* Permite rolagem vertical */
 }
 
 .container {
-  padding: 20px; /* Reduzido para telas menores */
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0,0,0,0.1);
   width: 100%;
@@ -34,12 +35,13 @@ body {
   text-align: center;
   background-color: #f5e9d8;
   transition: opacity 0.5s ease-in-out;
-  box-sizing: border-box; /* Garante que o padding não aumente o tamanho total */
+  box-sizing: border-box;
+  margin: 20px 0; /* Adiciona margem para evitar corte no topo e na base */
 }
 
 h1 {
   color: #ff6384;
-  font-size: 1.8em; /* Reduzido para telas menores */
+  font-size: 1.8em;
   margin-bottom: 15px;
 }
 
@@ -55,9 +57,9 @@ h3 {
 }
 
 input, button {
-  margin: 8px 0; /* Reduzido para telas menores */
+  margin: 8px 0;
   padding: 10px;
-  font-size: 0.9em; /* Reduzido para telas menores */
+  font-size: 0.9em;
   border-radius: 5px;
   border: 1px solid #ccc;
   width: 100%;
@@ -103,8 +105,9 @@ button:hover {
 
 canvas {
   margin-top: 15px;
-  width: 100% !important; /* Garante que o gráfico se ajuste */
+  width: 100% !important;
   height: auto !important;
+  max-height: 200px; /* Limita a altura do gráfico */
 }
 
 #motivation {
@@ -128,7 +131,7 @@ canvas {
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 8px; /* Reduzido para telas menores */
+  gap: 8px;
 }
 
 .forgot-password {
@@ -147,6 +150,8 @@ canvas {
   list-style: none;
   padding: 0;
   margin-top: 15px;
+  max-height: 150px; /* Limita a altura da lista */
+  overflow-y: auto; /* Adiciona rolagem à lista */
 }
 
 #weight-list li {
@@ -156,7 +161,7 @@ canvas {
   padding: 8px;
   border-bottom: 1px solid #ccc;
   font-size: 0.9em;
-  flex-wrap: wrap; /* Permite que os botões quebrem linha em telas pequenas */
+  flex-wrap: wrap;
 }
 
 #weight-list li button {
@@ -185,6 +190,8 @@ canvas {
   list-style: none;
   padding: 0;
   margin-top: 15px;
+  max-height: 200px; /* Limita a altura da lista de ranking */
+  overflow-y: auto; /* Adiciona rolagem à lista */
 }
 
 #ranking-list li {
@@ -228,7 +235,7 @@ canvas {
 @media (min-width: 1024px) {
   .container {
     padding: 40px;
-    max-width: 500px; /* Aumenta um pouco para telas grandes */
+    max-width: 500px;
   }
   h1 {
     font-size: 2em;
@@ -253,6 +260,12 @@ canvas {
     padding: 5px 10px;
     font-size: 0.9em;
   }
+  canvas {
+    max-height: 300px;
+  }
+  #weight-list {
+    max-height: 200px;
+  }
 }
 
 /* Telas intermediárias (entre 768px e 1024px) */
@@ -262,7 +275,7 @@ canvas {
     padding: 30px;
   }
   .background-section {
-    flex: 0.8; /* Reduz a proporção da imagem de fundo */
+    flex: 0.8;
   }
   .form-section {
     flex: 1.2;
@@ -274,7 +287,10 @@ canvas {
     font-size: 1.5em;
   }
   canvas {
-    max-height: 300px; /* Limita a altura do gráfico */
+    max-height: 250px;
+  }
+  #weight-list {
+    max-height: 150px;
   }
 }
 
@@ -289,11 +305,14 @@ canvas {
   .form-section {
     flex: none;
     height: 100vh;
-    overflow-y: auto; /* Permite rolagem se o conteúdo for muito grande */
+    overflow-y: auto;
+    align-items: flex-start; /* Alinha ao topo */
+    justify-content: flex-start; /* Alinha ao topo */
   }
   .container {
     max-width: 90%;
-    padding: 20px;
+    padding: 15px;
+    margin: 10px 0; /* Reduz a margem */
   }
   h1 {
     font-size: 1.5em;
@@ -320,7 +339,7 @@ canvas {
     padding: 10px;
   }
   canvas {
-    max-height: 250px; /* Reduz a altura do gráfico em telas pequenas */
+    max-height: 200px;
   }
   #motivation {
     font-size: 0.8em;
@@ -334,12 +353,16 @@ canvas {
     margin-top: 5px;
     width: auto;
   }
+  #weight-list {
+    max-height: 100px;
+  }
 }
 
 /* Telas muito pequenas (abaixo de 480px) */
 @media (max-width: 480px) {
   .container {
-    padding: 15px;
+    padding: 10px;
+    margin: 5px 0;
   }
   h1 {
     font-size: 1.2em;
@@ -359,9 +382,12 @@ canvas {
     padding: 8px;
   }
   canvas {
-    max-height: 200px;
+    max-height: 150px;
   }
   #motivation {
     font-size: 0.7em;
+  }
+  #weight-list {
+    max-height: 80px;
   }
 }
