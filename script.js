@@ -32,15 +32,19 @@ function getDailyMotivation() {
   return motivations[index];
 }
 
-// Funções para alternar entre telas
+// Funções para alternar entre telas com transição
 function showSignUp() {
   document.getElementById('login-section').style.display = 'none';
-  document.getElementById('signup-section').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('signup-section').style.display = 'block';
+  }, 50);
 }
 
 function showLogin() {
   document.getElementById('signup-section').style.display = 'none';
-  document.getElementById('login-section').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('login-section').style.display = 'block';
+  }, 50);
 }
 
 // Funções de autenticação
@@ -74,20 +78,10 @@ function signIn() {
 function signOut() {
   auth.signOut().then(() => {
     document.getElementById('main-section').style.display = 'none';
-    document.getElementById('login-section').style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('login-section').style.display = 'block';
+    }, 50);
   });
-}
-
-// Função de Reset de Senha
-function resetPassword() {
-  const email = document.getElementById('email').value;
-  if (!email) {
-    alert("Por favor, insira seu email para redefinir a senha.");
-    return;
-  }
-  auth.sendPasswordResetEmail(email)
-    .then(() => alert("Email de redefinição de senha enviado! Verifique sua caixa de entrada."))
-    .catch(error => alert("Erro ao enviar email: " + error.message));
 }
 
 // Verifica estado de autenticação
@@ -103,14 +97,18 @@ auth.onAuthStateChanged(user => {
     });
   } else {
     document.getElementById('main-section').style.display = 'none';
-    document.getElementById('login-section').style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('login-section').style.display = 'block';
+    }, 50);
   }
 });
 
 function showMainSection() {
   document.getElementById('login-section').style.display = 'none';
   document.getElementById('signup-section').style.display = 'none';
-  document.getElementById('main-section').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('main-section').style.display = 'block';
+  }, 50);
   document.getElementById('motivation').textContent = getDailyMotivation();
 }
 
