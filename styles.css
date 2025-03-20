@@ -157,6 +157,24 @@ canvas {
   background-color: #cc0000;
 }
 
+#ranking-list {
+  list-style: none;
+  padding: 0;
+}
+
+#ranking-list li {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#ranking-list li:first-child {
+  background-color: #ffd700; /* Ouro para o primeiro lugar */
+  font-weight: bold;
+}
+
 /* Animações */
 #login-section, #signup-section, #main-section, #edit-form {
   transition: opacity 0.5s ease-in-out;
