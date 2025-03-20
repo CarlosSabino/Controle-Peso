@@ -12,7 +12,7 @@ body {
 
 .background-section {
   flex: 1;
-  background-image: url('background.jpg');
+  background-image: url('background.jpg'); /* Ou a URL da imagem que você subiu */
   background-size: cover;
   background-position: center;
 }
@@ -22,7 +22,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: #f5e9d8; /* Bege claro para combinar com a madeira e tons quentes */
 }
 
 .container {
@@ -32,7 +32,8 @@ body {
   width: 100%;
   max-width: 400px;
   text-align: center;
-  background-color: #fff;
+  background-color: #f5e9d8; /* Mesmo tom para o container */
+  transition: opacity 0.5s ease-in-out; /* Animação de fade */
 }
 
 h1 {
@@ -56,7 +57,7 @@ input, button {
 }
 
 button {
-  background-color: #4caf50;
+  background-color: #4caf50; /* Verde escuro para combinar com as frutas */
   color: white;
   border: none;
   cursor: pointer;
@@ -64,7 +65,7 @@ button {
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #388e3c; /* Tom mais escuro de verde */
 }
 
 #signout-btn {
@@ -81,7 +82,7 @@ canvas {
 
 #motivation {
   font-style: italic;
-  color: #ff9800;
+  color: #ff9800; /* Laranja para combinar com as frutas */
   margin-bottom: 20px;
 }
 
@@ -112,6 +113,23 @@ canvas {
 
 .forgot-password:hover {
   text-decoration: underline;
+}
+
+/* Animações */
+#login-section, #signup-section, #main-section {
+  transition: opacity 0.5s ease-in-out;
+}
+
+#login-section[style*="display: none"],
+#signup-section[style*="display: none"],
+#main-section[style*="display: none"] {
+  opacity: 0;
+}
+
+#login-section[style*="display: block"],
+#signup-section[style*="display: block"],
+#main-section[style*="display: block"] {
+  opacity: 1;
 }
 
 /* Responsividade */
