@@ -26,7 +26,7 @@ body {
 }
 
 .container {
-  padding: 40px;
+  padding: 20px; /* Reduzido para telas menores */
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0,0,0,0.1);
   width: 100%;
@@ -34,16 +34,18 @@ body {
   text-align: center;
   background-color: #f5e9d8;
   transition: opacity 0.5s ease-in-out;
+  box-sizing: border-box; /* Garante que o padding não aumente o tamanho total */
 }
 
 h1 {
   color: #ff6384;
-  font-size: 2em;
-  margin-bottom: 20px;
+  font-size: 1.8em; /* Reduzido para telas menores */
+  margin-bottom: 15px;
 }
 
 h2 {
   color: #36a2eb;
+  font-size: 1.5em;
 }
 
 h3 {
@@ -53,9 +55,9 @@ h3 {
 }
 
 input, button {
-  margin: 10px 0;
-  padding: 12px;
-  font-size: 1em;
+  margin: 8px 0; /* Reduzido para telas menores */
+  padding: 10px;
+  font-size: 0.9em; /* Reduzido para telas menores */
   border-radius: 5px;
   border: 1px solid #ccc;
   width: 100%;
@@ -100,13 +102,16 @@ button:hover {
 }
 
 canvas {
-  margin-top: 20px;
+  margin-top: 15px;
+  width: 100% !important; /* Garante que o gráfico se ajuste */
+  height: auto !important;
 }
 
 #motivation {
   font-style: italic;
   color: #ff9800;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  font-size: 0.9em;
 }
 
 .form-group {
@@ -123,15 +128,15 @@ canvas {
 .button-group {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 8px; /* Reduzido para telas menores */
 }
 
 .forgot-password {
   display: block;
-  margin: 10px 0;
+  margin: 8px 0;
   color: #36a2eb;
   text-decoration: none;
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 
 .forgot-password:hover {
@@ -141,20 +146,22 @@ canvas {
 #weight-list {
   list-style: none;
   padding: 0;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 #weight-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 8px;
   border-bottom: 1px solid #ccc;
+  font-size: 0.9em;
+  flex-wrap: wrap; /* Permite que os botões quebrem linha em telas pequenas */
 }
 
 #weight-list li button {
-  padding: 5px 10px;
-  font-size: 0.9em;
+  padding: 5px 8px;
+  font-size: 0.8em;
   margin-left: 5px;
 }
 
@@ -177,15 +184,16 @@ canvas {
 #ranking-list {
   list-style: none;
   padding: 0;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 #ranking-list li {
-  padding: 10px;
+  padding: 8px;
   border-bottom: 1px solid #ccc;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 0.9em;
 }
 
 #ranking-list li:first-child {
@@ -215,6 +223,62 @@ canvas {
 }
 
 /* Responsividade */
+
+/* Telas grandes (acima de 1024px) */
+@media (min-width: 1024px) {
+  .container {
+    padding: 40px;
+    max-width: 500px; /* Aumenta um pouco para telas grandes */
+  }
+  h1 {
+    font-size: 2em;
+  }
+  h2 {
+    font-size: 1.8em;
+  }
+  input, button {
+    padding: 12px;
+    font-size: 1em;
+  }
+  .button-group {
+    gap: 10px;
+  }
+  #motivation {
+    font-size: 1em;
+  }
+  #weight-list li, #ranking-list li {
+    font-size: 1em;
+  }
+  #weight-list li button, #ranking-list li button {
+    padding: 5px 10px;
+    font-size: 0.9em;
+  }
+}
+
+/* Telas intermediárias (entre 768px e 1024px) */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .container {
+    max-width: 90%;
+    padding: 30px;
+  }
+  .background-section {
+    flex: 0.8; /* Reduz a proporção da imagem de fundo */
+  }
+  .form-section {
+    flex: 1.2;
+  }
+  h1 {
+    font-size: 1.8em;
+  }
+  h2 {
+    font-size: 1.5em;
+  }
+  canvas {
+    max-height: 300px; /* Limita a altura do gráfico */
+  }
+}
+
+/* Telas pequenas (abaixo de 768px) */
 @media (max-width: 768px) {
   .login-container {
     flex-direction: column;
@@ -225,8 +289,79 @@ canvas {
   .form-section {
     flex: none;
     height: 100vh;
+    overflow-y: auto; /* Permite rolagem se o conteúdo for muito grande */
   }
   .container {
     max-width: 90%;
+    padding: 20px;
+  }
+  h1 {
+    font-size: 1.5em;
+  }
+  h2 {
+    font-size: 1.3em;
+  }
+  h3 {
+    font-size: 1em;
+  }
+  input, button {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+  .button-group {
+    flex-direction: column;
+    gap: 5px;
+  }
+  .button-group button {
+    width: 100%;
+  }
+  .neon-btn {
+    font-size: 0.9em;
+    padding: 10px;
+  }
+  canvas {
+    max-height: 250px; /* Reduz a altura do gráfico em telas pequenas */
+  }
+  #motivation {
+    font-size: 0.8em;
+  }
+  #weight-list li, #ranking-list li {
+    font-size: 0.8em;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  #weight-list li button, #ranking-list li button {
+    margin-top: 5px;
+    width: auto;
+  }
+}
+
+/* Telas muito pequenas (abaixo de 480px) */
+@media (max-width: 480px) {
+  .container {
+    padding: 15px;
+  }
+  h1 {
+    font-size: 1.2em;
+  }
+  h2 {
+    font-size: 1.1em;
+  }
+  h3 {
+    font-size: 0.9em;
+  }
+  input, button {
+    padding: 6px;
+    font-size: 0.8em;
+  }
+  .neon-btn {
+    font-size: 0.8em;
+    padding: 8px;
+  }
+  canvas {
+    max-height: 200px;
+  }
+  #motivation {
+    font-size: 0.7em;
   }
 }
