@@ -79,6 +79,24 @@ function showLogin() {
   }, 50);
 }
 
+function showMainSection() {
+  document.getElementById('login-section').style.display = 'none';
+  document.getElementById('signup-section').style.display = 'none';
+  document.getElementById('ranking-section').style.display = 'none';
+  setTimeout(() => {
+    document.getElementById('main-section').style.display = 'block';
+  }, 50);
+  document.getElementById('motivation').textContent = getDailyMotivation();
+}
+
+function showRanking() {
+  document.getElementById('main-section').style.display = 'none';
+  setTimeout(() => {
+    document.getElementById('ranking-section').style.display = 'block';
+    updateWeeklyRanking();
+  }, 50);
+}
+
 // Funções de autenticação
 function signUp() {
   const name = document.getElementById('name').value;
@@ -116,6 +134,7 @@ function signOut() {
   }
   auth.signOut().then(() => {
     document.getElementById('main-section').style.display = 'none';
+    document.getElementById('ranking-section').style.display = 'none';
     setTimeout(() => {
       document.getElementById('login-section').style.display = 'block';
     }, 50);
@@ -140,14 +159,12 @@ auth.onAuthStateChanged(user => {
       }
       showMainSection();
       loadWeights(user.uid);
-      updateWeeklyRanking();
     }, error => {
       console.error("Erro ao ler dados do usuário:", error);
       alert("Erro ao carregar dados do usuário: " + error.message);
       document.getElementById('user-name').textContent = "Usuário";
       showMainSection();
       loadWeights(user.uid);
-      updateWeeklyRanking();
     });
   } else {
     console.log("Nenhum usuário autenticado.");
@@ -157,20 +174,12 @@ auth.onAuthStateChanged(user => {
       console.log("Listener de pesos desativado (onAuthStateChanged).");
     }
     document.getElementById('main-section').style.display = 'none';
+    document.getElementById('ranking-section').style.display = 'none';
     setTimeout(() => {
       document.getElementById('login-section').style.display = 'block';
     }, 50);
   }
 });
-
-function showMainSection() {
-  document.getElementById('login-section').style.display = 'none';
-  document.getElementById('signup-section').style.display = 'none';
-  setTimeout(() => {
-    document.getElementById('main-section').style.display = 'block';
-  }, 50);
-  document.getElementById('motivation').textContent = getDailyMotivation();
-}
 
 // Função para obter o número da semana do ano
 function getWeekNumber(date) {
@@ -322,9 +331,6 @@ function addWeight() {
             document.getElementById('motivation').textContent = weightGainMotivations[motivationIndex];
           }
         }
-
-        // Atualizar o ranking
-        updateWeeklyRanking();
       })
       .catch(error => {
         console.error("Erro ao adicionar peso:", error);
@@ -391,7 +397,6 @@ function saveEdit() {
     .then(() => {
       console.log("Peso editado com sucesso!");
       document.getElementById('edit-form').style.display = 'none';
-      updateWeeklyRanking();
     })
     .catch(error => {
       console.error("Erro ao editar peso:", error);
@@ -416,7 +421,6 @@ function deleteWeight(id) {
     database.ref('weights/' + user.uid + '/' + id).remove()
       .then(() => {
         console.log("Peso deletado com sucesso!");
-        updateWeeklyRanking();
       })
       .catch(error => {
         console.error("Erro ao deletar peso:", error);
