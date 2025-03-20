@@ -15,14 +15,19 @@
     <h1>⚖️ Controle de Peso 🥑</h1>
 
     <div id="auth-section">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Senha" required>
-      <button onclick="signUp()">Cadastrar</button>
-      <button onclick="signIn()">Entrar</button>
+      <div class="form-group">
+        <input type="text" id="name" placeholder="Seu Nome" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Senha" required>
+      </div>
+      <div class="button-group">
+        <button onclick="signUp()">Cadastrar</button>
+        <button onclick="signIn()">Entrar</button>
+      </div>
     </div>
 
     <div id="main-section" style="display: none;">
-      <h2>Bem-vindo! 🌟</h2>
+      <h2>Bem-vindo, <span id="user-name"></span>! 🌟</h2>
       <p id="motivation"></p>
       <input type="date" id="date" required>
       <input type="number" id="weight" placeholder="Peso (kg)" step="0.1" required>
