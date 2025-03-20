@@ -1,3 +1,4 @@
+// Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDu-66630YK500EMO1g7K4M0dZgNSdNm4Q",
   authDomain: "controlepeso-d5897.firebaseapp.com",
@@ -8,9 +9,10 @@ const firebaseConfig = {
   appId: "1:471187898717:web:7f5adde9afe600355b68b4"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.getAuth(app);
-const database = firebase.getDatabase(app);
+// Inicializa o Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
 let chart = null;
 
 const motivations = [
@@ -20,10 +22,11 @@ const motivations = [
   "Peso caindo, astral subindo! 🚀"
 ];
 
+// Funções de autenticação
 function signUp() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-  firebase.createUserWithEmailAndPassword(auth, email, password)
+  auth.createUserWithEmailAndPassword(email, password)
     .then(() => showMainSection())
     .catch(error => alert("Erro ao cadastrar: " + error.message));
 }
@@ -31,20 +34,21 @@ function signUp() {
 function signIn() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-  firebase.signInWithEmailAndPassword(auth, email, password)
+  auth.signInWithEmailAndPassword(email, password)
     .then(() => showMainSection())
     .catch(error => alert("Erro ao entrar: " + error.message));
 }
 
 function signOut() {
-  firebase.signOut(auth).then(() => {
+  auth.signOut().then(() => {
     document.getElementById('auth-section').style.display = 'block';
     document.getElementById('main-section').style.display = 'none';
     document.getElementById('signout-btn').style.display = 'none';
   });
 }
 
-firebase.onAuthStateChanged(auth, user => {
+// Verifica estado de autenticação
+auth.onAuthStateChanged(user => {
   if (user) {
     showMainSection();
     loadWeights(user.uid);
@@ -61,24 +65,26 @@ function showMainSection() {
   document.getElementById('motivation').textContent = motivations[Math.floor(Math.random() * motivations.length)];
 }
 
+// Adicionar peso
 function addWeight() {
   const user = auth.currentUser;
   if (!user) return;
   const date = document.getElementById('date').value;
   const weight = parseFloat(document.getElementById('weight').value);
   if (date && weight) {
-    firebase.push(firebase.ref(database, 'weights/' + user.uid), { date, weight })
+    database.ref('weights/' + user.uid).push({ date, weight })
       .then(() => {
-        document.getElementById('date'). value = '';
+        document.getElementById('date').value = '';
         document.getElementById('weight').value = '';
       });
   }
 }
 
+// Carregar pesos
 function loadWeights(uid) {
   const weightList = document.getElementById('weight-list');
   weightList.innerHTML = '';
-  firebase.onValue(firebase.ref(database, 'weights/' + uid), snapshot => {
+  database.ref('weights/' + uid).on('value', snapshot => {
     const weights = [];
     snapshot.forEach(child => {
       const data = child.val();
@@ -91,6 +97,7 @@ function loadWeights(uid) {
   });
 }
 
+// Atualizar gráfico
 function updateChart(weights) {
   if (chart) chart.destroy();
   const ctx = document.getElementById('pesoChart').getContext('2d');
