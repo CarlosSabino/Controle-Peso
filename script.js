@@ -14,6 +14,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const database = firebase.database();
 let chart = null;
+let weightListener = null; // Variável para armazenar o listener
 
 const motivations = [
   "Você é um rockstar da balança! 🎸",
@@ -77,11 +78,20 @@ function signIn() {
 }
 
 function signOut() {
+  // Desativar o listener de pesos antes de fazer logout
+  if (weightListener) {
+    weightListener.off();
+    weightListener = null;
+    console.log("Listener de pesos desativado.");
+  }
   auth.signOut().then(() => {
     document.getElementById('main-section').style.display = 'none';
     setTimeout(() => {
       document.getElementById('login-section').style.display = 'block';
     }, 50);
+  }).catch(error => {
+    console.error("Erro ao fazer logout:", error);
+    alert("Erro ao fazer logout: " + error.message);
   });
 }
 
@@ -109,6 +119,12 @@ auth.onAuthStateChanged(user => {
     });
   } else {
     console.log("Nenhum usuário autenticado.");
+    // Desativar o listener ao deslogar
+    if (weightListener) {
+      weightListener.off();
+      weightListener = null;
+      console.log("Listener de pesos desativado (onAuthStateChanged).");
+    }
     document.getElementById('main-section').style.display = 'none';
     setTimeout(() => {
       document.getElementById('login-section').style.display = 'block';
@@ -164,7 +180,9 @@ function addWeight() {
 function loadWeights(uid) {
   const weightList = document.getElementById('weight-list');
   weightList.innerHTML = '';
-  database.ref('weights/' + uid).on('value', snapshot => {
+  // Armazenar a referência do listener
+  weightListener = database.ref('weights/' + uid);
+  weightListener.on('value', snapshot => {
     const weights = [];
     snapshot.forEach(child => {
       const data = child.val();
