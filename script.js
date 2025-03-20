@@ -27,17 +27,29 @@ const motivations = [
 
 // Função para pegar a frase do dia
 function getDailyMotivation() {
-  const today = new Date().toISOString().split('T')[0]; // Data no formato YYYY-MM-DD
+  const today = new Date().toISOString().split('T')[0];
   const index = Math.floor(new Date(today).getTime() / (1000 * 60 * 60 * 24)) % motivations.length;
   return motivations[index];
 }
 
 // Funções de autenticação
 function signUp() {
+  const name = document.getElementById('name').value;
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
+  if (!name) {
+    alert("Por favor, insira seu nome!");
+    return;
+  }
   auth.createUserWithEmailAndPassword(email, password)
-    .then(() => showMainSection())
+    .then(userCredential => {
+      const user = userCredential.user;
+      // Salvar o nome no banco de dados
+      database.ref('users/' + user.uid).set({
+        name: name,
+        email: email
+      }).then(() => showMainSection());
+    })
     .catch(error => alert("Erro ao cadastrar: " + error.message));
 }
 
@@ -59,8 +71,15 @@ function signOut() {
 // Verifica estado de autenticação
 auth.onAuthStateChanged(user => {
   if (user) {
-    showMainSection();
-    loadWeights(user.uid);
+    // Carregar o nome do usuário
+    database.ref('users/' + user.uid).once('value', snapshot => {
+      const userData = snapshot.val();
+      if (userData) {
+        document.getElementById('user-name').textContent = userData.name;
+      }
+      showMainSection();
+      loadWeights(user.uid);
+    });
   } else {
     document.getElementById('auth-section').style.display = 'block';
     document.getElementById('main-section').style.display = 'none';
