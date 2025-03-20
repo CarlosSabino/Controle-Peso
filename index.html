@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle de Peso</title>
+  <title>Controle de Peso Divertido</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -15,7 +15,7 @@
     <div class="background-section"></div>
     <div class="form-section">
       <div class="container">
-        <h1>⚖️ Controle de Peso 🥑</h1>
+        <h1>⚖️ Controle de Peso Animado 🥑</h1>
 
         <!-- Tela de Login -->
         <div id="login-section">
@@ -51,6 +51,14 @@
           <input type="number" id="weight" placeholder="Peso (kg)" step="0.1" required>
           <button onclick="addWeight()">Adicionar</button>
           <button onclick="signOut()" id="signout-btn">Sair</button>
+          <div id="edit-form" style="display: none; margin-top: 20px;">
+            <h3>Editar Registro</h3>
+            <input type="hidden" id="edit-id">
+            <input type="date" id="edit-date" required>
+            <input type="number" id="edit-weight" placeholder="Peso (kg)" step="0.1" required>
+            <button onclick="saveEdit()">Salvar</button>
+            <button onclick="cancelEdit()">Cancelar</button>
+          </div>
           <canvas id="pesoChart"></canvas>
           <ul id="weight-list"></ul>
         </div>
