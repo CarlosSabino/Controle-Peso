@@ -21,9 +21,9 @@ body {
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Alinha ao topo para evitar corte */
+  align-items: center; /* Centraliza verticalmente por padrão */
   background-color: #f5e9d8;
-  overflow-y: auto; /* Permite rolagem vertical */
+  overflow-y: auto;
 }
 
 .container {
@@ -36,7 +36,7 @@ body {
   background-color: #f5e9d8;
   transition: opacity 0.5s ease-in-out;
   box-sizing: border-box;
-  margin: 20px 0; /* Adiciona margem para evitar corte no topo e na base */
+  margin: 20px 0;
 }
 
 h1 {
@@ -107,7 +107,7 @@ canvas {
   margin-top: 15px;
   width: 100% !important;
   height: auto !important;
-  max-height: 200px; /* Limita a altura do gráfico */
+  max-height: 200px;
 }
 
 #motivation {
@@ -150,8 +150,8 @@ canvas {
   list-style: none;
   padding: 0;
   margin-top: 15px;
-  max-height: 150px; /* Limita a altura da lista */
-  overflow-y: auto; /* Adiciona rolagem à lista */
+  max-height: 150px;
+  overflow-y: auto;
 }
 
 #weight-list li {
@@ -190,8 +190,8 @@ canvas {
   list-style: none;
   padding: 0;
   margin-top: 15px;
-  max-height: 200px; /* Limita a altura da lista de ranking */
-  overflow-y: auto; /* Adiciona rolagem à lista */
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 #ranking-list li {
@@ -306,13 +306,13 @@ canvas {
     flex: none;
     height: 100vh;
     overflow-y: auto;
-    align-items: flex-start; /* Alinha ao topo */
-    justify-content: flex-start; /* Alinha ao topo */
+    align-items: flex-start; /* Alinha ao topo para evitar corte */
+    justify-content: flex-start;
   }
   .container {
     max-width: 90%;
     padding: 15px;
-    margin: 10px 0; /* Reduz a margem */
+    margin: 10px 0;
   }
   h1 {
     font-size: 1.5em;
