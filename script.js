@@ -216,3 +216,20 @@ function updateChart(weights) {
     options: { animation: { duration: 2000 } }
   });
 }
+
+// Função para recuperação de senha
+function resetPassword() {
+  const email = document.getElementById('email').value;
+  if (!email) {
+    alert("Por favor, insira seu email para redefinir a senha.");
+    return;
+  }
+  auth.sendPasswordResetEmail(email)
+    .then(() => {
+      alert("Email de redefinição de senha enviado! Verifique sua caixa de entrada (e a pasta de spam).");
+    })
+    .catch(error => {
+      console.error("Erro ao enviar email de redefinição:", error);
+      alert("Erro ao enviar email de redefinição: " + error.message);
+    });
+}
