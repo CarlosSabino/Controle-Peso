@@ -19,8 +19,18 @@ const motivations = [
   "Você é um rockstar da balança! 🎸",
   "Mais leve que uma pluma hoje! 🪶",
   "Arrasou, continue assim! 💪",
-  "Peso caindo, astral subindo! 🚀"
+  "Peso caindo, astral subindo! 🚀",
+  "Hoje é seu dia de brilhar! ✨",
+  "Você está no caminho certo! 🏃‍♂️",
+  "Cada passo conta, você é incrível! 🌈"
 ];
+
+// Função para pegar a frase do dia
+function getDailyMotivation() {
+  const today = new Date().toISOString().split('T')[0]; // Data no formato YYYY-MM-DD
+  const index = Math.floor(new Date(today).getTime() / (1000 * 60 * 60 * 24)) % motivations.length;
+  return motivations[index];
+}
 
 // Funções de autenticação
 function signUp() {
@@ -43,7 +53,6 @@ function signOut() {
   auth.signOut().then(() => {
     document.getElementById('auth-section').style.display = 'block';
     document.getElementById('main-section').style.display = 'none';
-    document.getElementById('signout-btn').style.display = 'none';
   });
 }
 
@@ -61,8 +70,7 @@ auth.onAuthStateChanged(user => {
 function showMainSection() {
   document.getElementById('auth-section').style.display = 'none';
   document.getElementById('main-section').style.display = 'block';
-  document.getElementById('signout-btn').style.display = 'inline';
-  document.getElementById('motivation').textContent = motivations[Math.floor(Math.random() * motivations.length)];
+  document.getElementById('motivation').textContent = getDailyMotivation();
 }
 
 // Adicionar peso
