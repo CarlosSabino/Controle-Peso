@@ -14,7 +14,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const database = firebase.database();
 let chart = null;
-let weightListener = null; // Variável para armazenar o listener
+let weightListener = null;
 
 const motivations = [
   "Você é um rockstar da balança! 🎸",
@@ -95,7 +95,6 @@ function signIn() {
 }
 
 function signOut() {
-  // Desativar o listener de pesos antes de fazer logout
   if (weightListener) {
     weightListener.off();
     weightListener = null;
@@ -136,7 +135,6 @@ auth.onAuthStateChanged(user => {
     });
   } else {
     console.log("Nenhum usuário autenticado.");
-    // Desativar o listener ao deslogar
     if (weightListener) {
       weightListener.off();
       weightListener = null;
@@ -197,15 +195,18 @@ function addWeight() {
 function loadWeights(uid) {
   const weightList = document.getElementById('weight-list');
   weightList.innerHTML = '';
-  // Armazenar a referência do listener
   weightListener = database.ref('weights/' + uid);
   weightListener.on('value', snapshot => {
     const weights = [];
+    weightList.innerHTML = '';
     snapshot.forEach(child => {
       const data = child.val();
-      weights.push(data);
+      const id = child.key;
+      weights.push({ id, ...data });
       const li = document.createElement('li');
-      li.textContent = `${data.date}: ${data.weight} kg`;
+      li.innerHTML = `${data.date}: ${data.weight} kg 
+        <button class="edit-btn" onclick="editWeight('${id}', '${data.date}', ${data.weight})">Editar</button>
+        <button class="delete-btn" onclick="deleteWeight('${id}')">Deletar</button>`;
       weightList.appendChild(li);
     });
     updateChart(weights);
@@ -213,6 +214,71 @@ function loadWeights(uid) {
     console.error("Erro ao carregar pesos:", error);
     alert("Erro ao carregar pesos: " + error.message);
   });
+}
+
+// Editar peso
+function editWeight(id, date, weight) {
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-date').value = date;
+  document.getElementById('edit-weight').value = weight;
+  document.getElementById('edit-form').style.display = 'block';
+}
+
+// Salvar edição
+function saveEdit() {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Por favor, faça login novamente.");
+    return;
+  }
+
+  const id = document.getElementById('edit-id').value;
+  const date = document.getElementById('edit-date').value;
+  const weight = parseFloat(document.getElementById('edit-weight').value);
+
+  if (!date) {
+    alert("Por favor, selecione uma data.");
+    return;
+  }
+  if (isNaN(weight)) {
+    alert("Por favor, insira um peso válido.");
+    return;
+  }
+
+  database.ref('weights/' + user.uid + '/' + id).set({ date, weight })
+    .then(() => {
+      console.log("Peso editado com sucesso!");
+      document.getElementById('edit-form').style.display = 'none';
+    })
+    .catch(error => {
+      console.error("Erro ao editar peso:", error);
+      alert("Erro ao editar peso: " + error.message);
+    });
+}
+
+// Cancelar edição
+function cancelEdit() {
+  document.getElementById('edit-form').style.display = 'none';
+}
+
+// Deletar peso
+function deleteWeight(id) {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Por favor, faça login novamente.");
+    return;
+  }
+
+  if (confirm("Tem certeza que deseja deletar este registro?")) {
+    database.ref('weights/' + user.uid + '/' + id).remove()
+      .then(() => {
+        console.log("Peso deletado com sucesso!");
+      })
+      .catch(error => {
+        console.error("Erro ao deletar peso:", error);
+        alert("Erro ao deletar peso: " + error.message);
+      });
+  }
 }
 
 // Atualizar gráfico
