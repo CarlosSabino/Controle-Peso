@@ -78,6 +78,18 @@ function signOut() {
   });
 }
 
+// Função de Reset de Senha
+function resetPassword() {
+  const email = document.getElementById('email').value;
+  if (!email) {
+    alert("Por favor, insira seu email para redefinir a senha.");
+    return;
+  }
+  auth.sendPasswordResetEmail(email)
+    .then(() => alert("Email de redefinição de senha enviado! Verifique sua caixa de entrada."))
+    .catch(error => alert("Erro ao enviar email: " + error.message));
+}
+
 // Verifica estado de autenticação
 auth.onAuthStateChanged(user => {
   if (user) {
