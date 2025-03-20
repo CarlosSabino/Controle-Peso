@@ -11,8 +11,7 @@ body {
 }
 
 .background-section {
-  flex: 1;
-  background-image: url('https://images.unsplash.com/photo-1490818387583-1baba5e638fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+  background-image: url('background.jpg');
   background-size: cover;
   background-position: center;
 }
