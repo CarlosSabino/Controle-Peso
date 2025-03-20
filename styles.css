@@ -12,7 +12,7 @@ body {
 
 .background-section {
   flex: 1;
-  background-image: url('background.jpg'); /* Ou a URL da imagem que você subiu */
+  background-image: url('background.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -22,7 +22,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5e9d8; /* Bege claro para combinar com a madeira e tons quentes */
+  background-color: #f5e9d8;
 }
 
 .container {
@@ -32,8 +32,8 @@ body {
   width: 100%;
   max-width: 400px;
   text-align: center;
-  background-color: #f5e9d8; /* Mesmo tom para o container */
-  transition: opacity 0.5s ease-in-out; /* Animação de fade */
+  background-color: #f5e9d8;
+  transition: opacity 0.5s ease-in-out;
 }
 
 h1 {
@@ -44,6 +44,12 @@ h1 {
 
 h2 {
   color: #36a2eb;
+}
+
+h3 {
+  color: #4caf50;
+  font-size: 1.2em;
+  margin-bottom: 10px;
 }
 
 input, button {
@@ -57,7 +63,7 @@ input, button {
 }
 
 button {
-  background-color: #4caf50; /* Verde escuro para combinar com as frutas */
+  background-color: #4caf50;
   color: white;
   border: none;
   cursor: pointer;
@@ -65,7 +71,7 @@ button {
 }
 
 button:hover {
-  background-color: #388e3c; /* Tom mais escuro de verde */
+  background-color: #388e3c;
 }
 
 #signout-btn {
@@ -82,7 +88,7 @@ canvas {
 
 #motivation {
   font-style: italic;
-  color: #ff9800; /* Laranja para combinar com as frutas */
+  color: #ff9800;
   margin-bottom: 20px;
 }
 
@@ -115,20 +121,58 @@ canvas {
   text-decoration: underline;
 }
 
+#weight-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+#weight-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+#weight-list li button {
+  padding: 5px 10px;
+  font-size: 0.9em;
+  margin-left: 5px;
+}
+
+#weight-list li button.edit-btn {
+  background-color: #36a2eb;
+}
+
+#weight-list li button.edit-btn:hover {
+  background-color: #2b81c3;
+}
+
+#weight-list li button.delete-btn {
+  background-color: #ff4444;
+}
+
+#weight-list li button.delete-btn:hover {
+  background-color: #cc0000;
+}
+
 /* Animações */
-#login-section, #signup-section, #main-section {
+#login-section, #signup-section, #main-section, #edit-form {
   transition: opacity 0.5s ease-in-out;
 }
 
 #login-section[style*="display: none"],
 #signup-section[style*="display: none"],
-#main-section[style*="display: none"] {
+#main-section[style*="display: none"],
+#edit-form[style*="display: none"] {
   opacity: 0;
 }
 
 #login-section[style*="display: block"],
 #signup-section[style*="display: block"],
-#main-section[style*="display: block"] {
+#main-section[style*="display: block"],
+#edit-form[style*="display: block"] {
   opacity: 1;
 }
 
