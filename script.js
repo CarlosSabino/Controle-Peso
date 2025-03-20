@@ -59,6 +59,7 @@ function signUp() {
   auth.createUserWithEmailAndPassword(email, password)
     .then(userCredential => {
       const user = userCredential.user;
+      console.log("Usuário cadastrado:", user.uid);
       database.ref('users/' + user.uid).set({
         name: name,
         email: email
@@ -87,15 +88,27 @@ function signOut() {
 // Verifica estado de autenticação
 auth.onAuthStateChanged(user => {
   if (user) {
+    console.log("Usuário autenticado:", user.uid);
     database.ref('users/' + user.uid).once('value', snapshot => {
       const userData = snapshot.val();
+      console.log("Dados do usuário:", userData);
       if (userData) {
         document.getElementById('user-name').textContent = userData.name;
+      } else {
+        console.warn("Nenhum dado encontrado para o usuário:", user.uid);
+        document.getElementById('user-name').textContent = "Usuário";
       }
+      showMainSection();
+      loadWeights(user.uid);
+    }, error => {
+      console.error("Erro ao ler dados do usuário:", error);
+      alert("Erro ao carregar dados do usuário: " + error.message);
+      document.getElementById('user-name').textContent = "Usuário";
       showMainSection();
       loadWeights(user.uid);
     });
   } else {
+    console.log("Nenhum usuário autenticado.");
     document.getElementById('main-section').style.display = 'none';
     setTimeout(() => {
       document.getElementById('login-section').style.display = 'block';
@@ -115,16 +128,36 @@ function showMainSection() {
 // Adicionar peso
 function addWeight() {
   const user = auth.currentUser;
-  if (!user) return;
+  if (!user) {
+    console.log("Usuário não autenticado!");
+    alert("Por favor, faça login novamente.");
+    return;
+  }
+
   const date = document.getElementById('date').value;
   const weight = parseFloat(document.getElementById('weight').value);
-  if (date && weight) {
-    database.ref('weights/' + user.uid).push({ date, weight })
-      .then(() => {
-        document.getElementById('date').value = '';
-        document.getElementById('weight').value = '';
-      });
+
+  console.log("Data:", date, "Peso:", weight);
+
+  if (!date) {
+    alert("Por favor, selecione uma data.");
+    return;
   }
+  if (isNaN(weight)) {
+    alert("Por favor, insira um peso válido.");
+    return;
+  }
+
+  database.ref('weights/' + user.uid).push({ date, weight })
+    .then(() => {
+      console.log("Peso adicionado com sucesso!");
+      document.getElementById('date').value = '';
+      document.getElementById('weight').value = '';
+    })
+    .catch(error => {
+      console.error("Erro ao adicionar peso:", error);
+      alert("Erro ao adicionar peso: " + error.message);
+    });
 }
 
 // Carregar pesos
@@ -141,6 +174,9 @@ function loadWeights(uid) {
       weightList.appendChild(li);
     });
     updateChart(weights);
+  }, error => {
+    console.error("Erro ao carregar pesos:", error);
+    alert("Erro ao carregar pesos: " + error.message);
   });
 }
 
