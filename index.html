@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle de Peso Divertido</title>
+  <title>Controle de Peso</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -16,7 +16,7 @@
     <div class="background-section"></div>
     <div class="form-section">
       <div class="container">
-        <h1>⚖️ Controle de Peso Animado 🥑</h1>
+        <h1>⚖️ Controle de Peso 🥑</h1>
 
         <!-- Tela de Login -->
         <div id="login-section">
@@ -48,10 +48,7 @@
         <div id="main-section" style="display: none;">
           <h2>Bem-vindo, <span id="user-name"></span>! 🌟</h2>
           <p id="motivation"></p>
-          <div id="weekly-ranking" style="margin-bottom: 20px;">
-            <h3>🏆 Top Score da Semana (Segunda a Sexta)</h3>
-            <ul id="ranking-list"></ul>
-          </div>
+          <button class="neon-btn" onclick="showRanking()">Veja o Top Score da Semana!</button>
           <input type="date" id="date" required>
           <input type="number" id="weight" placeholder="Peso (kg)" step="0.1" required>
           <button onclick="addWeight()">Adicionar</button>
@@ -66,6 +63,13 @@
           </div>
           <canvas id="pesoChart"></canvas>
           <ul id="weight-list"></ul>
+        </div>
+
+        <!-- Tela de Ranking -->
+        <div id="ranking-section" style="display: none;">
+          <h2>🏆 Top Score da Semana (Segunda a Sexta)</h2>
+          <ul id="ranking-list"></ul>
+          <button onclick="showMainSection()">Voltar</button>
         </div>
       </div>
     </div>
