@@ -18,7 +18,7 @@ let weightListener = null;
 
 const motivations = [
   "Você é um rockstar da balança! 🎸",
-  "Mais leve que uma pluma hoje! 🪶",
+  "Mais leve que uma folha hoje! 🍃",
   "Arrasou, continue assim! 💪",
   "Peso caindo, astral subindo! 🚀",
   "Hoje é seu dia de brilhar! ✨",
