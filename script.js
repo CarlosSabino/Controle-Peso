@@ -83,6 +83,7 @@ function showMainSection() {
   document.getElementById('login-section').style.display = 'none';
   document.getElementById('signup-section').style.display = 'none';
   document.getElementById('ranking-section').style.display = 'none';
+  document.getElementById('weights-section').style.display = 'none';
   setTimeout(() => {
     document.getElementById('main-section').style.display = 'block';
   }, 50);
@@ -91,9 +92,18 @@ function showMainSection() {
 
 function showRanking() {
   document.getElementById('main-section').style.display = 'none';
+  document.getElementById('weights-section').style.display = 'none';
   setTimeout(() => {
     document.getElementById('ranking-section').style.display = 'block';
     updateWeeklyRanking();
+  }, 50);
+}
+
+function showWeights() {
+  document.getElementById('main-section').style.display = 'none';
+  document.getElementById('ranking-section').style.display = 'none';
+  setTimeout(() => {
+    document.getElementById('weights-section').style.display = 'block';
   }, 50);
 }
 
@@ -135,6 +145,7 @@ function signOut() {
   auth.signOut().then(() => {
     document.getElementById('main-section').style.display = 'none';
     document.getElementById('ranking-section').style.display = 'none';
+    document.getElementById('weights-section').style.display = 'none';
     setTimeout(() => {
       document.getElementById('login-section').style.display = 'block';
     }, 50);
@@ -175,6 +186,7 @@ auth.onAuthStateChanged(user => {
     }
     document.getElementById('main-section').style.display = 'none';
     document.getElementById('ranking-section').style.display = 'none';
+    document.getElementById('weights-section').style.display = 'none';
     setTimeout(() => {
       document.getElementById('login-section').style.display = 'block';
     }, 50);
@@ -250,7 +262,7 @@ function updateWeeklyRanking() {
         return { uid: user.uid, name: user.name, weightLoss };
       }).catch(error => {
         console.error(`Erro ao ler pesos de ${user.name}:`, error);
-        return null; // Ignora usuários com erro de permissão
+        return null;
       });
     });
 
@@ -304,7 +316,6 @@ function addWeight() {
     return;
   }
 
-  // Obter o peso anterior para comparação
   database.ref('weights/' + user.uid).once('value', snapshot => {
     const weights = [];
     snapshot.forEach(child => {
@@ -314,7 +325,6 @@ function addWeight() {
 
     console.log("Pesos existentes para o usuário:", weights);
 
-    // Salvar o novo peso
     const newWeightRef = database.ref('weights/' + user.uid).push();
     newWeightRef.set({ date, weight })
       .then(() => {
@@ -322,7 +332,6 @@ function addWeight() {
         document.getElementById('date').value = '';
         document.getElementById('weight').value = '';
 
-        // Comparar com o peso anterior
         if (weights.length > 0) {
           weights.sort((a, b) => new Date(b.date) - new Date(a.date));
           const previousWeight = weights[0].weight;
