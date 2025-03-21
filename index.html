@@ -15,21 +15,21 @@
       <!-- Seção de Login -->
       <div id="login-section" class="container">
         <h1>Controle de Peso ⚖️</h1>
-        <input type="email" id="email" placeholder="Email 📧">
-        <input type="password" id="password" placeholder="Senha 🔒">
-        <button onclick="signIn()">Entrar 🚪</button>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="signIn()">Entrar</button>
         <a href="#" class="forgot-password" onclick="resetPassword()">Esqueceu a senha? 🔑</a>
-        <button onclick="showSignUp()">Cadastrar 📝</button>
+        <button onclick="showSignUp()">Cadastrar</button>
       </div>
 
       <!-- Seção de Cadastro -->
       <div id="signup-section" class="container" style="display: none;">
-        <h1>Cadastro 📝</h1>
+        <h1>Cadastro</h1>
         <input type="text" id="name" placeholder="Nome 👤">
-        <input type="email" id="signup-email" placeholder="Email 📧">
-        <input type="password" id="signup-password" placeholder="Senha 🔒">
-        <button onclick="signUp()">Cadastrar ✅</button>
-        <button onclick="showLogin()">Voltar ⬅️</button>
+        <input type="email" id="signup-email" placeholder="Email">
+        <input type="password" id="signup-password" placeholder="Senha">
+        <button onclick="signUp()">Cadastrar</button>
+        <button onclick="showLogin()">Voltar</button>
       </div>
 
       <!-- Seção Principal -->
@@ -40,13 +40,13 @@
           <input type="date" id="date">
           <input type="number" id="weight" placeholder="Peso (kg) ⚖️" step="0.1">
           <div class="button-group">
-            <button onclick="addWeight()">Adicionar ➕</button>
-            <button class="neon-btn" onclick="showRanking()">Veja o Top Score da Semana! 🏆</button>
-            <button onclick="showWeights()">Ver Registros de Pesos 📊</button>
+            <button onclick="addWeight()">Adicionar</button>
+            <button class="neon-btn" onclick="showRanking()">Veja o Top Score da Semana!</button>
+            <button onclick="showWeights()">Ver Registros de Pesos</button>
           </div>
         </div>
         <canvas id="pesoChart"></canvas>
-        <button id="signout-btn" onclick="signOut()">Sair 🚪</button>
+        <button id="signout-btn" onclick="signOut()">Sair</button>
       </div>
 
       <!-- Seção de Edição -->
@@ -56,8 +56,8 @@
         <input type="date" id="edit-date">
         <input type="number" id="edit-weight" placeholder="Peso (kg) ⚖️" step="0.1">
         <div class="button-group">
-          <button onclick="saveEdit()">Salvar 💾</button>
-          <button onclick="cancelEdit()">Cancelar ❌</button>
+          <button onclick="saveEdit()">Salvar</button>
+          <button onclick="cancelEdit()">Cancelar</button>
         </div>
       </div>
 
@@ -65,14 +65,14 @@
       <div id="ranking-section" class="container" style="display: none;">
         <h2>Top Score da Semana 🏆</h2>
         <ul id="ranking-list"></ul>
-        <button onclick="showMainSection()">Voltar ⬅️</button>
+        <button onclick="showMainSection()">Voltar</button>
       </div>
 
       <!-- Seção de Registros de Pesos -->
       <div id="weights-section" class="container" style="display: none;">
         <h2>Registros de Pesos 📊</h2>
         <ul id="weight-list"></ul>
-        <button onclick="showMainSection()">Voltar ⬅️</button>
+        <button onclick="showMainSection()">Voltar</button>
       </div>
     </div>
   </div>
