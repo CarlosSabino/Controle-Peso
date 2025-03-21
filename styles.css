@@ -21,7 +21,7 @@ body {
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center; /* Centraliza verticalmente por padrão */
+  align-items: center;
   background-color: #f5e9d8;
   overflow-y: auto;
 }
@@ -306,7 +306,7 @@ canvas {
     flex: none;
     height: 100vh;
     overflow-y: auto;
-    align-items: flex-start; /* Alinha ao topo para evitar corte */
+    align-items: flex-start;
     justify-content: flex-start;
   }
   .container {
