@@ -11,6 +11,7 @@ const firebaseConfig = {
 
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
+console.log("Firebase inicializado com sucesso:", firebase.app().name);
 const auth = firebase.auth();
 const database = firebase.database();
 let chart = null;
@@ -66,6 +67,7 @@ function resetPassword() {
 
 // Funções para alternar entre telas com transição
 function showSignUp() {
+  console.log("Exibindo tela de cadastro...");
   document.getElementById('login-section').style.display = 'none';
   setTimeout(() => {
     document.getElementById('signup-section').style.display = 'block';
@@ -73,6 +75,7 @@ function showSignUp() {
 }
 
 function showLogin() {
+  console.log("Exibindo tela de login...");
   document.getElementById('signup-section').style.display = 'none';
   setTimeout(() => {
     document.getElementById('login-section').style.display = 'block';
@@ -80,6 +83,7 @@ function showLogin() {
 }
 
 function showMainSection() {
+  console.log("Exibindo tela principal...");
   document.getElementById('login-section').style.display = 'none';
   document.getElementById('signup-section').style.display = 'none';
   document.getElementById('ranking-section').style.display = 'none';
@@ -91,6 +95,7 @@ function showMainSection() {
 }
 
 function showRanking() {
+  console.log("Exibindo tela de ranking...");
   document.getElementById('main-section').style.display = 'none';
   document.getElementById('weights-section').style.display = 'none';
   setTimeout(() => {
@@ -100,6 +105,7 @@ function showRanking() {
 }
 
 function showWeights() {
+  console.log("Exibindo tela de registros de pesos...");
   document.getElementById('main-section').style.display = 'none';
   document.getElementById('ranking-section').style.display = 'none';
   setTimeout(() => {
@@ -109,6 +115,7 @@ function showWeights() {
 
 // Funções de autenticação
 function signUp() {
+  console.log("Iniciando cadastro...");
   const name = document.getElementById('name').value;
   const email = document.getElementById('signup-email').value;
   const password = document.getElementById('signup-password').value;
@@ -116,33 +123,57 @@ function signUp() {
     alert("Por favor, insira seu nome!");
     return;
   }
+  console.log("Dados do cadastro - Nome:", name, "Email:", email);
   auth.createUserWithEmailAndPassword(email, password)
     .then(userCredential => {
       const user = userCredential.user;
-      console.log("Usuário cadastrado:", user.uid);
+      console.log("Usuário cadastrado com sucesso:", user.uid);
       database.ref('users/' + user.uid).set({
         name: name,
         email: email
-      }).then(() => showMainSection());
+      }).then(() => {
+        console.log("Dados do usuário salvos no Firebase. Exibindo tela principal...");
+        showMainSection();
+      }).catch(error => {
+        console.error("Erro ao salvar dados do usuário no Firebase:", error);
+        alert("Erro ao salvar dados do usuário: " + error.message);
+      });
     })
-    .catch(error => alert("Erro ao cadastrar: " + error.message));
+    .catch(error => {
+      console.error("Erro ao cadastrar:", error);
+      alert("Erro ao cadastrar: " + error.message);
+    });
 }
 
 function signIn() {
+  console.log("Iniciando login...");
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
+  console.log("Dados do login - Email:", email);
+  if (!email || !password) {
+    console.log("Email ou senha não preenchidos!");
+    alert("Por favor, preencha email e senha.");
+    return;
+  }
   auth.signInWithEmailAndPassword(email, password)
-    .then(() => showMainSection())
-    .catch(error => alert("Erro ao entrar: " + error.message));
+    .then(() => {
+      console.log("Login bem-sucedido! Aguardando onAuthStateChanged...");
+    })
+    .catch(error => {
+      console.error("Erro ao fazer login:", error);
+      alert("Erro ao entrar: " + error.message);
+    });
 }
 
 function signOut() {
+  console.log("Iniciando logout...");
   if (weightListener) {
     weightListener.off();
     weightListener = null;
     console.log("Listener de pesos desativado.");
   }
   auth.signOut().then(() => {
+    console.log("Logout bem-sucedido!");
     document.getElementById('main-section').style.display = 'none';
     document.getElementById('ranking-section').style.display = 'none';
     document.getElementById('weights-section').style.display = 'none';
@@ -161,7 +192,7 @@ auth.onAuthStateChanged(user => {
     console.log("Usuário autenticado - UID:", user.uid, "Email:", user.email);
     database.ref('users/' + user.uid).once('value', snapshot => {
       const userData = snapshot.val();
-      console.log("Dados do usuário:", userData);
+      console.log("Dados do usuário carregados:", userData);
       if (userData) {
         document.getElementById('user-name').textContent = userData.name;
       } else {
