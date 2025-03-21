@@ -4,76 +4,82 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle de Peso</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
   <div class="login-container">
     <div class="background-section"></div>
     <div class="form-section">
-      <div class="container">
-        <h1>⚖️ Controle de Peso 🥑</h1>
+      <!-- Seção de Login -->
+      <div id="login-section" class="container">
+        <h1>Controle de Peso</h1>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="signIn()">Entrar</button>
+        <a href="#" class="forgot-password" onclick="resetPassword()">Esqueceu a senha?</a>
+        <button onclick="showSignUp()">Cadastrar</button>
+      </div>
 
-        <!-- Tela de Login -->
-        <div id="login-section">
-          <div class="form-group">
-            <input type="email" id="email" placeholder="Usuário (Email)" required>
-            <input type="password" id="password" placeholder="Senha" required>
-            <a href="#" class="forgot-password" onclick="resetPassword()">Esqueceu sua senha?</a>
-          </div>
+      <!-- Seção de Cadastro -->
+      <div id="signup-section" class="container" style="display: none;">
+        <h1>Cadastro</h1>
+        <input type="text" id="name" placeholder="Nome">
+        <input type="email" id="signup-email" placeholder="Email">
+        <input type="password" id="signup-password" placeholder="Senha">
+        <button onclick="signUp()">Cadastrar</button>
+        <button onclick="showLogin()">Voltar</button>
+      </div>
+
+      <!-- Seção Principal -->
+      <div id="main-section" class="container" style="display: none;">
+        <h2>Bem-vindo, <span id="user-name">Usuário</span>!</h2>
+        <p id="motivation"></p>
+        <div class="form-group">
+          <input type="date" id="date">
+          <input type="number" id="weight" placeholder="Peso (kg)" step="0.1">
           <div class="button-group">
-            <button onclick="signIn()">Entrar</button>
-            <button onclick="showSignUp()">Cadastrar</button>
+            <button onclick="addWeight()">Adicionar</button>
+            <button class="neon-btn" onclick="showRanking()">Veja o Top Score da Semana!</button>
+            <button onclick="showWeights()">Ver Registros de Pesos</button>
           </div>
         </div>
+        <canvas id="pesoChart"></canvas>
+        <button id="signout-btn" onclick="signOut()">Sair</button>
+      </div>
 
-        <!-- Tela de Cadastro -->
-        <div id="signup-section" style="display: none;">
-          <div class="form-group">
-            <input type="text" id="name" placeholder="Seu Nome" required>
-            <input type="email" id="signup-email" placeholder="Email" required>
-            <input type="password" id="signup-password" placeholder="Senha" required>
-          </div>
-          <div class="button-group">
-            <button onclick="signUp()">Cadastrar</button>
-            <button onclick="showLogin()">Voltar</button>
-          </div>
+      <!-- Seção de Edição -->
+      <div id="edit-form" class="container" style="display: none;">
+        <h3>Editar Peso</h3>
+        <input type="hidden" id="edit-id">
+        <input type="date" id="edit-date">
+        <input type="number" id="edit-weight" placeholder="Peso (kg)" step="0.1">
+        <div class="button-group">
+          <button onclick="saveEdit()">Salvar</button>
+          <button onclick="cancelEdit()">Cancelar</button>
         </div>
+      </div>
 
-        <!-- Tela Principal -->
-        <div id="main-section" style="display: none;">
-          <h2>Bem-vindo, <span id="user-name"></span>! 🌟</h2>
-          <p id="motivation"></p>
-          <button class="neon-btn" onclick="showRanking()">Veja o Top Score da Semana!</button>
-          <input type="date" id="date" required>
-          <input type="number" id="weight" placeholder="Peso (kg)" step="0.1" required>
-          <button onclick="addWeight()">Adicionar</button>
-          <button onclick="signOut()" id="signout-btn">Sair</button>
-          <div id="edit-form" style="display: none; margin-top: 20px;">
-            <h3>Editar Registro</h3>
-            <input type="hidden" id="edit-id">
-            <input type="date" id="edit-date" required>
-            <input type="number" id="edit-weight" placeholder="Peso (kg)" step="0.1" required>
-            <button onclick="saveEdit()">Salvar</button>
-            <button onclick="cancelEdit()">Cancelar</button>
-          </div>
-          <canvas id="pesoChart"></canvas>
-          <ul id="weight-list"></ul>
-        </div>
+      <!-- Seção de Ranking -->
+      <div id="ranking-section" class="container" style="display: none;">
+        <h2>Top Score da Semana</h2>
+        <ul id="ranking-list"></ul>
+        <button onclick="showMainSection()">Voltar</button>
+      </div>
 
-        <!-- Tela de Ranking -->
-        <div id="ranking-section" style="display: none;">
-          <h2>🏆 Top Score da Semana (Segunda a Sexta)</h2>
-          <ul id="ranking-list"></ul>
-          <button onclick="showMainSection()">Voltar</button>
-        </div>
+      <!-- Nova Seção de Registros de Pesos -->
+      <div id="weights-section" class="container" style="display: none;">
+        <h2>Registros de Pesos</h2>
+        <ul id="weight-list"></ul>
+        <button onclick="showMainSection()">Voltar</button>
       </div>
     </div>
   </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
