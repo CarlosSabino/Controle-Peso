@@ -152,7 +152,7 @@ canvas {
   list-style: none;
   padding: 0;
   margin-top: 15px;
-  max-height: 150px;
+  max-height: 300px;
   overflow-y: auto;
 }
 
@@ -188,7 +188,7 @@ canvas {
   background-color: #cc0000;
 }
 
-#ranking-section {
+#ranking-section, #weights-section {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -217,7 +217,7 @@ canvas {
 }
 
 /* Animações */
-#login-section, #signup-section, #main-section, #edit-form, #ranking-section {
+#login-section, #signup-section, #main-section, #edit-form, #ranking-section, #weights-section {
   transition: opacity 0.5s ease-in-out;
 }
 
@@ -225,7 +225,8 @@ canvas {
 #signup-section[style*="display: none"],
 #main-section[style*="display: none"],
 #edit-form[style*="display: none"],
-#ranking-section[style*="display: none"] {
+#ranking-section[style*="display: none"],
+#weights-section[style*="display: none"] {
   opacity: 0;
 }
 
@@ -233,7 +234,8 @@ canvas {
 #signup-section[style*="display: block"],
 #main-section[style*="display: block"],
 #edit-form[style*="display: block"],
-#ranking-section[style*="display: block"] {
+#ranking-section[style*="display: block"],
+#weights-section[style*="display: block"] {
   opacity: 1;
 }
 
@@ -241,6 +243,9 @@ canvas {
 
 /* Telas grandes (acima de 1024px) */
 @media (min-width: 1024px) {
+  .login-container {
+    border: 2px solid green; /* Depuração */
+  }
   .container {
     padding: 40px;
     max-width: 500px;
@@ -272,18 +277,21 @@ canvas {
     max-height: 300px;
   }
   #weight-list {
-    max-height: 200px;
+    max-height: 400px;
   }
-  #ranking-section {
+  #ranking-section, #weights-section {
     padding: 20px;
   }
   #ranking-list {
-    max-height: 200px;
+    max-height: 300px;
   }
 }
 
 /* Telas intermediárias (entre 768px e 1024px) */
 @media (max-width: 1024px) and (min-width: 768px) {
+  .login-container {
+    border: 2px solid blue; /* Depuração */
+  }
   .container {
     max-width: 90%;
     padding: 30px;
@@ -304,19 +312,20 @@ canvas {
     max-height: 250px;
   }
   #weight-list {
-    max-height: 150px;
+    max-height: 350px;
   }
-  #ranking-section {
+  #ranking-section, #weights-section {
     padding: 15px;
   }
   #ranking-list {
-    max-height: 150px;
+    max-height: 250px;
   }
 }
 
 /* Telas pequenas (abaixo de 768px) */
 @media (max-width: 768px) {
   .login-container {
+    border: 2px solid red; /* Depuração */
     flex-direction: column;
     height: auto;
     min-height: 100vh;
@@ -378,18 +387,21 @@ canvas {
     width: auto;
   }
   #weight-list {
-    max-height: 100px;
+    max-height: 300px;
   }
-  #ranking-section {
+  #ranking-section, #weights-section {
     padding: 10px;
   }
   #ranking-list {
-    max-height: 150px;
+    max-height: 200px;
   }
 }
 
 /* Telas muito pequenas (abaixo de 480px) */
 @media (max-width: 480px) {
+  .login-container {
+    border: 2px solid purple; /* Depuração */
+  }
   .container {
     padding: 10px;
     margin: 5px auto;
@@ -418,12 +430,12 @@ canvas {
     font-size: 0.7em;
   }
   #weight-list {
-    max-height: 80px;
+    max-height: 250px;
   }
-  #ranking-section {
+  #ranking-section, #weights-section {
     padding: 5px;
   }
   #ranking-list {
-    max-height: 100px;
+    max-height: 150px;
   }
 }
