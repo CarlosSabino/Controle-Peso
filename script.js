@@ -41,6 +41,13 @@ const weightGainMotivations = [
   "Mantenha o foco, você consegue! 🌈"
 ];
 
+// Função para formatar a data para o padrão brasileiro (DD/MM/YYYY)
+function formatDateToBrazilian(dateStr) {
+  if (!dateStr) return '';
+  const [year, month, day] = dateStr.split('-');
+  return `${day}/${month}/${year}`;
+}
+
 // Função para pegar a frase do dia
 function getDailyMotivation() {
   const today = new Date().toISOString().split('T')[0];
@@ -145,7 +152,12 @@ function signUp() {
     });
 }
 
-function signIn() {
+function signIn(event) {
+  if (event) {
+    console.log("Login disparado via formulário (Enter ou botão).");
+  } else {
+    console.log("Login disparado via clique direto no botão.");
+  }
   console.log("Iniciando login...");
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
@@ -419,8 +431,9 @@ function loadWeights(uid) {
       const data = child.val();
       const id = child.key;
       weights.push({ id, ...data });
+      const formattedDate = formatDateToBrazilian(data.date); // Formatar a data para DD/MM/YYYY
       const li = document.createElement('li');
-      li.innerHTML = `${data.date}: ${data.weight} kg 
+      li.innerHTML = `${formattedDate}: ${data.weight} kg 
         <button class="edit-btn" onclick="editWeight('${id}', '${data.date}', ${data.weight})">Editar</button>
         <button class="delete-btn" onclick="deleteWeight('${id}')">Deletar</button>`;
       weightList.appendChild(li);
@@ -435,7 +448,7 @@ function loadWeights(uid) {
 // Editar peso
 function editWeight(id, date, weight) {
   document.getElementById('edit-id').value = id;
-  document.getElementById('edit-date').value = date;
+  document.getElementById('edit-date').value = date; // Mantém o formato YYYY-MM-DD para o input
   document.getElementById('edit-weight').value = weight;
   document.getElementById('edit-form').style.display = 'block';
 }
@@ -449,7 +462,7 @@ function saveEdit() {
   }
 
   const id = document.getElementById('edit-id').value;
-  const date = document.getElementById('edit-date').value;
+  const date = document.getElementById('edit-date').value; // Formato YYYY-MM-DD
   const weight = parseFloat(document.getElementById('edit-weight').value);
 
   if (!date) {
@@ -504,7 +517,7 @@ function updateChart(weights) {
   chart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: weights.map(w => w.date),
+      labels: weights.map(w => formatDateToBrazilian(w.date)), // Formatar a data para DD/MM/YYYY no gráfico
       datasets: [{
         label: 'Peso (kg)',
         data: weights.map(w => w.weight),
