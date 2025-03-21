@@ -147,7 +147,7 @@ function signOut() {
 // Verifica estado de autenticação
 auth.onAuthStateChanged(user => {
   if (user) {
-    console.log("Usuário autenticado:", user.uid);
+    console.log("Usuário autenticado - UID:", user.uid, "Email:", user.email);
     database.ref('users/' + user.uid).once('value', snapshot => {
       const userData = snapshot.val();
       console.log("Dados do usuário:", userData);
@@ -181,7 +181,6 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-// Função para obter o número da semana do ano
 function getWeekNumber(date) {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
@@ -190,17 +189,16 @@ function getWeekNumber(date) {
   return Math.round(((d - week1) / 86400000 + 1) / 7);
 }
 
-// Função para obter o início e fim da semana (segunda a sexta)
 function getWeekRange() {
   const today = new Date();
-  const dayOfWeek = today.getDay(); // 0 (domingo) a 6 (sábado)
-  const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek); // Ajusta para segunda-feira
+  const dayOfWeek = today.getDay();
+  const diffToMonday = (dayOfWeek === 0 ? -6 : 1 - dayOfWeek);
   const monday = new Date(today);
   monday.setDate(today.getDate() + diffToMonday);
   monday.setHours(0, 0, 0, 0);
 
   const friday = new Date(monday);
-  friday.setDate(monday.getDate() + 4); // Sexta-feira é 4 dias após segunda
+  friday.setDate(monday.getDate() + 4);
   friday.setHours(23, 59, 59, 999);
 
   const year = monday.getFullYear();
@@ -210,13 +208,13 @@ function getWeekRange() {
   return { monday, friday, weekKey };
 }
 
-// Função para atualizar o ranking semanal
 function updateWeeklyRanking() {
   const { monday, friday, weekKey } = getWeekRange();
   const rankingList = document.getElementById('ranking-list');
   rankingList.innerHTML = '';
 
-  // Obter todos os usuários
+  console.log("Intervalo da semana:", monday, "a", friday);
+
   database.ref('users').once('value', usersSnapshot => {
     const users = [];
     usersSnapshot.forEach(userSnap => {
@@ -224,7 +222,8 @@ function updateWeeklyRanking() {
       users.push({ uid: userSnap.key, name: userData.name });
     });
 
-    // Para cada usuário, calcular a perda de peso na semana
+    console.log("Usuários encontrados:", users);
+
     const promises = users.map(user => {
       return database.ref('weights/' + user.uid).once('value').then(weightsSnapshot => {
         const weights = [];
@@ -236,30 +235,34 @@ function updateWeeklyRanking() {
           }
         });
 
+        console.log(`Pesos de ${user.name} na semana:`, weights);
+
         if (weights.length === 0) return null;
 
-        // Ordenar por data
         weights.sort((a, b) => a.date - b.date);
 
-        // Pegar o primeiro e o último peso da semana
         const firstWeight = weights[0].weight;
         const lastWeight = weights[weights.length - 1].weight;
         const weightLoss = firstWeight - lastWeight;
 
+        console.log(`${user.name} - Primeiro peso: ${firstWeight}, Último peso: ${lastWeight}, Perda: ${weightLoss}`);
+
         return { uid: user.uid, name: user.name, weightLoss };
+      }).catch(error => {
+        console.error(`Erro ao ler pesos de ${user.name}:`, error);
+        return null; // Ignora usuários com erro de permissão
       });
     });
 
     Promise.all(promises).then(results => {
-      // Filtrar usuários sem pesos e ordenar por perda de peso
       const ranking = results
         .filter(result => result !== null && result.weightLoss > 0)
         .sort((a, b) => b.weightLoss - a.weightLoss);
 
-      // Salvar no Firebase
+      console.log("Ranking calculado (apenas perdas positivas):", ranking);
+
       database.ref('weeklyScores/' + weekKey).set(ranking);
 
-      // Exibir o ranking
       ranking.forEach((entry, index) => {
         const li = document.createElement('li');
         li.textContent = `${index + 1}. ${entry.name}: ${entry.weightLoss.toFixed(1)} kg`;
@@ -267,7 +270,7 @@ function updateWeeklyRanking() {
       });
 
       if (ranking.length === 0) {
-        rankingList.innerHTML = '<li>Nenhum progresso registrado esta semana.</li>';
+        rankingList.innerHTML = '<li>Nenhum usuário perdeu peso esta semana.</li>';
       }
     });
   });
@@ -275,23 +278,28 @@ function updateWeeklyRanking() {
 
 // Adicionar peso
 function addWeight() {
-  const user = auth.currentUser;
-  if (!user) {
-    console.log("Usuário não autenticado!");
-    alert("Por favor, faça login novamente.");
+  if (!auth.currentUser) {
+    console.log("Usuário não autenticado! Redirecionando para login...");
+    alert("Sua sessão expirou. Por favor, faça login novamente.");
+    signOut();
     return;
   }
+
+  const user = auth.currentUser;
+  console.log("Usuário autenticado para adicionar peso - UID:", user.uid, "Email:", user.email);
 
   const date = document.getElementById('date').value;
   const weight = parseFloat(document.getElementById('weight').value);
 
-  console.log("Data:", date, "Peso:", weight);
+  console.log("Tentando adicionar peso - Usuário UID:", user.uid, "Data:", date, "Peso:", weight);
 
   if (!date) {
+    console.log("Data não selecionada!");
     alert("Por favor, selecione uma data.");
     return;
   }
   if (isNaN(weight)) {
+    console.log("Peso inválido:", document.getElementById('weight').value);
     alert("Por favor, insira um peso válido.");
     return;
   }
@@ -304,20 +312,22 @@ function addWeight() {
       weights.push({ date: data.date, weight: data.weight });
     });
 
-    weights.sort((a, b) => new Date(b.date) - new Date(a.date)); // Ordenar por data decrescente
+    console.log("Pesos existentes para o usuário:", weights);
 
     // Salvar o novo peso
-    database.ref('weights/' + user.uid).push({ date, weight })
+    const newWeightRef = database.ref('weights/' + user.uid).push();
+    newWeightRef.set({ date, weight })
       .then(() => {
-        console.log("Peso adicionado com sucesso!");
+        console.log("Peso adicionado com sucesso no Firebase! ID do novo peso:", newWeightRef.key);
         document.getElementById('date').value = '';
         document.getElementById('weight').value = '';
 
         // Comparar com o peso anterior
         if (weights.length > 0) {
+          weights.sort((a, b) => new Date(b.date) - new Date(a.date));
           const previousWeight = weights[0].weight;
+          console.log("Comparando - Peso anterior:", previousWeight, "Novo peso:", weight);
           if (weight < previousWeight) {
-            // Perdeu peso: confetes e mensagem motivacional
             confetti({
               particleCount: 100,
               spread: 70,
@@ -326,23 +336,41 @@ function addWeight() {
             const motivationIndex = Math.floor(Math.random() * weightLossMotivations.length);
             document.getElementById('motivation').textContent = weightLossMotivations[motivationIndex];
           } else {
-            // Ganhou peso ou manteve: apenas mensagem motivacional
             const motivationIndex = Math.floor(Math.random() * weightGainMotivations.length);
             document.getElementById('motivation').textContent = weightGainMotivations[motivationIndex];
           }
+        } else {
+          console.log("Nenhum peso anterior encontrado para comparação.");
         }
       })
       .catch(error => {
-        console.error("Erro ao adicionar peso:", error);
+        console.error("Erro ao adicionar peso no Firebase:", error);
         alert("Erro ao adicionar peso: " + error.message);
       });
+  }).catch(error => {
+    console.error("Erro ao ler pesos existentes:", error);
+    alert("Erro ao ler pesos existentes: " + error.message);
   });
 }
 
 // Carregar pesos
 function loadWeights(uid) {
+  if (!auth.currentUser) {
+    console.log("Usuário não autenticado ao carregar pesos! UID fornecido:", uid);
+    return;
+  }
+  if (uid !== auth.currentUser.uid) {
+    console.error("UID fornecido não corresponde ao usuário autenticado! UID fornecido:", uid, "UID autenticado:", auth.currentUser.uid);
+    return;
+  }
+
+  console.log("Carregando pesos para UID:", uid);
   const weightList = document.getElementById('weight-list');
   weightList.innerHTML = '';
+  if (weightListener) {
+    weightListener.off();
+    console.log("Listener anterior desativado.");
+  }
   weightListener = database.ref('weights/' + uid);
   weightListener.on('value', snapshot => {
     const weights = [];
