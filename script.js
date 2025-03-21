@@ -426,25 +426,34 @@ function loadWeights(uid) {
   weightListener = database.ref('weights/' + uid);
   weightListener.on('value', snapshot => {
     const weights = [];
-    weightList.innerHTML = '';
     snapshot.forEach(child => {
       const data = child.val();
       const id = child.key;
       weights.push({ id, ...data });
-      const formattedDate = formatDateToBrazilian(data.date); // Formatar a data para DD/MM/YYYY
+    });
+
+    // Ordenar os pesos por data (ascendente: do mais antigo para o mais recente)
+    weights.sort((a, b) => new Date(a.date) - new Date(b.date));
+    console.log("Pesos ordenados por data:", weights);
+
+    // Exibir os pesos na lista
+    weightList.innerHTML = '';
+    weights.forEach(weight => {
+      const formattedDate = formatDateToBrazilian(weight.date); // Formatar a data para DD/MM/YYYY
       const li = document.createElement('li');
-      li.innerHTML = `${formattedDate}: ${data.weight} kg 
-        <button class="edit-btn" onclick="editWeight('${id}', '${data.date}', ${data.weight})">Editar</button>
-        <button class="delete-btn" onclick="deleteWeight('${id}')">Deletar</button>`;
+      li.innerHTML = `${formattedDate}: ${weight.weight} kg 
+        <button class="edit-btn" onclick="editWeight('${weight.id}', '${weight.date}', ${weight.weight})">Editar</button>
+        <button class="delete-btn" onclick="deleteWeight('${weight.id}')">Deletar</button>`;
       weightList.appendChild(li);
     });
+
+    // Atualizar o gráfico com os pesos ordenados
     updateChart(weights);
   }, error => {
     console.error("Erro ao carregar pesos:", error);
     alert("Erro ao carregar pesos: " + error.message);
   });
 }
-
 // Editar peso
 function editWeight(id, date, weight) {
   document.getElementById('edit-id').value = id;
