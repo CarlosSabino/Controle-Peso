@@ -15,16 +15,18 @@
       <!-- Seção de Login -->
       <div id="login-section" class="container">
         <h1>Controle de Peso ⚖️</h1>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Senha">
-        <button onclick="signIn()">Entrar</button>
+        <form id="login-form" onsubmit="signIn(); return false;">
+          <input type="email" id="email" placeholder="Email">
+          <input type="password" id="password" placeholder="Senha">
+          <button type="submit">Entrar</button>
+        </form>
         <a href="#" class="forgot-password" onclick="resetPassword()">Esqueceu a senha? 🔑</a>
         <button onclick="showSignUp()">Cadastrar</button>
       </div>
 
       <!-- Seção de Cadastro -->
       <div id="signup-section" class="container" style="display: none;">
-        <h1>Cadastro</h1>
+        <h1>Cadastro 📝</h1>
         <input type="text" id="name" placeholder="Nome 👤">
         <input type="email" id="signup-email" placeholder="Email">
         <input type="password" id="signup-password" placeholder="Senha">
@@ -51,7 +53,7 @@
 
       <!-- Seção de Edição -->
       <div id="edit-form" class="container" style="display: none;">
-        <h3>Editar Peso ✏️</h3>
+        <h3>Editar Peso</h3>
         <input type="hidden" id="edit-id">
         <input type="date" id="edit-date">
         <input type="number" id="edit-weight" placeholder="Peso (kg) ⚖️" step="0.1">
